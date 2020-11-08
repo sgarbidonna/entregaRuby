@@ -15,6 +15,9 @@ module RN
 
         def call(title:, **options)
           book = options[:book]
+          File.open("out.txt", "w") do |f|
+            f.write(data_you_want_to_write)
+          end
           warn "TODO: Implementar creación de la nota con título '#{title}' (en el libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
