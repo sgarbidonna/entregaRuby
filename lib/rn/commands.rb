@@ -1,12 +1,10 @@
 module RN
   module Commands
-
     autoload :Books, 'rn/commands/books'
     autoload :Notes, 'rn/commands/notes'
     autoload :Version, 'rn/commands/version'
 
     extend Dry::CLI::Registry
-    # include Paths
 
     register 'books', aliases: ['b'] do |prefix|
       prefix.register 'create', Books::Create
