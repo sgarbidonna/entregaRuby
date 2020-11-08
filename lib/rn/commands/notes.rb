@@ -113,8 +113,4 @@ module RN
       end
     end
   end
-<<<<<<< HEAD
-  
-=======
 end
->>>>>>> a598d80c4ddf9c70e8e25789e9a538ab49ae1869

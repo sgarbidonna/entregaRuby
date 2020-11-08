@@ -37,7 +37,7 @@ module RN
 
           def call(name: nil, **options)
             if options[:global] then
-              # FileUtils.rm_rf(Dir.glob(self.root))
+              # FileUtils.rm_rf(Dir.entries(self.root))
               warn "Acaba de eliminar todas las notas contenidas en el cuaderno global #{self.root}"
             elsif !name.nil? then
               FileUtils.remove_entry_secure self.path(name)
