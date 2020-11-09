@@ -10,16 +10,11 @@ module RN
 
           include Paths
 
-          # example [
-          #   '"My book" # Creates a new book named "My book"',
-          #   'Memoires  # Creates a new book named "Memoires"'
-          # ]
-
           def call(name:, **)
-            if name.scan(/[!@#$%^&*()_+{}\[\]:;'"\/\\?><.,]/).empty? then
+            if self.validate(name) then
               FileUtils.mkdir_p self.path(name)
               warn "Cuaderno #{name} creado!!"
-            else warn "No puede incluir símbolos en el nombre del cuaderno" end
+            end
           end
 
         end
@@ -49,7 +44,8 @@ module RN
           include Paths
 
           def call(*)
-            puts Dir.entries(self.root).select {|f| File.directory?(File.join(self.root,f))}
+            puts Dir.glob("#{self.root}/*")
+            # puts Dir.entries(self.root).select {|f| File.directory?(File.join(self.root,f))}
           end
         end
 
@@ -62,8 +58,8 @@ module RN
           include Paths
 
           def call(old_name:, new_name:, **)
-            if Dir.exist?(self.path(old_name)) then
-              if new_name.scan(/[!@#$%^&*()_+{}\[\]:;'"\/\\?><.,]/).empty? then
+            if self.exists(old_name) then
+              if self.validate(new_name) then
                 FileUtils.mv self.path(old_name), self.path(new_name)
                 warn "El antiguo cuaderno de nombre '#{old_name}' pasó a llamarse '#{new_name}'."
               else warn "No puede incluir símbolos en el nombre del cuaderno" end
