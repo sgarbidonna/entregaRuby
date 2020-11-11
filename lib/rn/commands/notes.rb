@@ -16,11 +16,11 @@ module RN
 
         def call(title:, **options)
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          if self.validate(title)
-            if !self.exists(book+self.extention(title))
-                File.new(book+self.extention(title),'w')
-                warn "La nota '#{title.upcase}' se creó exitosamente)"
-            else warn "La nota ya existía en el cuaderno " end
+
+          if self.general_validations(book, title)
+              FileUtils.mkdir_p(book) if !self.exists(book)
+              File.new(book+self.extention(title),'w')
+              warn "La nota '#{title.upcase}' se creó exitosamente)"
           end
         end
       end
@@ -36,8 +36,7 @@ module RN
 
         def call(title:, **options)
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          FileUtils.remove_entry_secure book+self.extention(title)
-          warn "Nota eliminada"
+          self.exists(book+self.extention(title)) ? (FileUtils.remove_entry_secure(book+self.extention(title)) && (warn "Nota eliminada")) : (warn "La nota no existe")
         end
       end
 
@@ -55,7 +54,9 @@ module RN
           # Ya q utilicé la gema tty-editor, tanto las clases (comandos) Show como Edit funcionan igual.
           # Debido a esto decidí crear una función de mi módulo Note, con el solo objetivo de
           # no repetir muchas líneas de código
-          self.show_or_edit(title, options[:book])
+
+          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
+          self.show_and_edit(title, book)
 
         end
       end
@@ -73,7 +74,7 @@ module RN
         def call(old_title:, new_title:, **options)
 
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          if self.validate_rename_a_note(book, new_title, old_title)
+          if self.validate_retitle_a_note(book, new_title, old_title)
             File.rename(book+self.extention(old_title),book+self.extention(new_title))
             warn "Renombre exitoso"
           end
@@ -92,7 +93,8 @@ module RN
 
         def call(**options)
           # el codigo del final de archivo no funcionaba -> duda
-          # solución poco objetosa y no recursiva -> SUPER VER!
+          # esta solución es poco objetosa y no es escalable, le falta recursión -> SUPER VER!
+
           puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]} if options[:global]
           puts Dir["#{self.path(ARGV[-1])}/*"].map {|note| note.split("/")[-1]} if self.exists(self.path(ARGV[-1]))
           if options == {}
@@ -114,8 +116,8 @@ module RN
         include Note
 
         def call(title:, **options)
-          # options = [] unless options[:book]
-          self.show_or_edit(title, options[:book])
+          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
+          self.show_and_edit(title, book)
         end
 
 
