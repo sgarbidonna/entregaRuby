@@ -47,5 +47,13 @@ module Note
     #     end
     # end
 
+    def show_or_edit(title,book=[])
+        if !book.nil?
+            !self.exists(self.path(ARGV[-1])) ? (return warn "No existe el cuaderno seleccionado") :
+            self.exists(self.path(ARGV[-1])+self.extention(title)) ? TTY::Editor.open(self.path(ARGV[-1])+self.extention(title)) : (return warn "No existe la nota o te equivocaste de cuaderno :)")
+        else
+            self.exists(self.root+self.extention(title)) ? TTY::Editor.open(self.root+self.extention(title)) : (return warn "No existe la nota o no se encuentra en el cuaderno global")
+        end
+    end
 
 end

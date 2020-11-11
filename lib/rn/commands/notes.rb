@@ -56,15 +56,16 @@ module RN
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
-        example [
-          'todo                        # Edits a note titled "todo" from the global book',
-          '"New note" --book "My book" # Edits a note titled "New note" from the book "My book"',
-          'thoughts --book Memoires    # Edits a note titled "thoughts" from the book "Memoires"'
-        ]
+        include Paths
+        include Note
+
 
         def call(title:, **options)
-          book = options[:book]
-          warn "TODO: Implementar modificación de la nota con título '#{title}' (del libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          # Ya q utilicé la gema tty-editor, tanto las clases (comandos) Show como Edit funcionan igual.
+          # Debido a esto decidí crear una función de mi módulo Note, con el solo objetivo de
+          # no repetir muchas líneas de código
+          self.show_or_edit(title, options[:book])
+
         end
       end
 
@@ -140,19 +141,12 @@ module RN
         include Paths
         include Note
 
-        example [
-          'todo                        # Shows a note titled "todo" from the global book',
-          '"New note" --book "My book" # Shows a note titled "New note" from the book "My book"',
-          'thoughts --book Memoires    # Shows a note titled "thoughts" from the book "Memoires"'
-        ]
-
         def call(title:, **options)
-          book = options[:book]
-          puts self.root+self.extention(title)
-          # File.open(self.root+self.extention(title))
-          TTY::Editor.open(self.root+self.extention(title))
-          warn "TODO: Implementar vista de la nota con título '#{title}' (del libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          # options = [] unless options[:book]
+          self.show_or_edit(title, options[:book])
         end
+
+
       end
     end
   end
