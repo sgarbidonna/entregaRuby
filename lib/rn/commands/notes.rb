@@ -1,7 +1,6 @@
 require 'fileutils'
 require_relative '../../helpers/note'
 require_relative '../../helpers/paths'
-require_relative "../lib/tty-editor"
 
 module RN
   module Commands
