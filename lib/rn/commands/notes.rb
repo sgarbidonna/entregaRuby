@@ -48,7 +48,7 @@ module RN
 
         def call(title:, **options)
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          FileUtils.remove_entry_secure self.path(book+self.extention(title))
+          FileUtils.remove_entry_secure book+self.extention(title)
         end
       end
 
