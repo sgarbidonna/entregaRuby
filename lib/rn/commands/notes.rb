@@ -1,6 +1,7 @@
 require 'fileutils'
 require_relative '../../helpers/note'
 require_relative '../../helpers/paths'
+require_relative "../lib/tty-editor"
 
 module RN
   module Commands
@@ -79,21 +80,33 @@ module RN
         include Note
 
         def call(old_title:, new_title:, **options)
-          path=""
-          puts self.root+self.extention(old_title)
-          if options[:book] && self.validate_rename_note_in_book(self.path(ARGV[-1]),old_title,new_title)
-            path = self.path(ARGV[-1])
-          elsif !options[:book] && self.validate_rename_note_in_book(self.root,old_title,new_title)
-            path = self.root
-          end
-
-          puts path
-          if !path.empty?
-            old_title=path+self.extention(old_title)
-            new_title=path+self.extention(new_title)
-            File.rename(old_title,new_title)
+          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
+          if !self.exists(book)
+            warn "El cuaderno ingresado no existe"
+            return false
+          elsif !self.exists(book+self.extention(old_title))
+            warn "La nota ingresada no existe en el cuaderno"
+            return false
+          elsif self.exists(book+self.extention(new_title))
+            warn "Ya existe una nota con el renombre ingresado en el cuaderno"
+            return false
+          else
+            File.rename(book+self.extention(old_title),book+self.extention(new_title))
             warn "Renombre exitoso"
           end
+
+          #  NO  SE  POR QUÉ  NO  FUNCIONA  LA  VALIDACION !!
+          # path=""
+          # if options[:book] && self.validate_rename_note_in_book(self.path(ARGV[-1]),old_title,new_title)
+          #   path = self.path(ARGV[-1])
+          # elsif !options[:book] && self.validate_rename_note_in_book(self.root,old_title,new_title)
+          #   path = self.root
+          # end
+          # if !path.empty?
+          #   File.rename(path+self.extention(old_title),path+self.extention(new_title))
+          #   warn "Renombre exitoso"
+          # end
+
         end
       end
 
@@ -101,19 +114,21 @@ module RN
         desc 'List notes'
 
         option :book, type: :string, desc: 'Book'
-        option :global, type: :boolean, default: false, desc: 'List only notes from the global book'
+        option :global, type: :boolean, desc: 'List only notes from the global book'
 
-        example [
-          '                 # Lists notes from all books (including the global book)',
-          '--global         # Lists notes from the global book',
-          '--book "My book" # Lists notes from the book named "My book"',
-          '--book Memoires  # Lists notes from the book named "Memoires"'
-        ]
+        include Paths
 
         def call(**options)
-          book = options[:book]
-          global = options[:global]
-          warn "TODO: Implementar listado de las notas del libro '#{book}' (global=#{global}).\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          # el codigo del final de archivo no funcionaba -> duda
+
+          puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]} if options[:global]
+          puts Dir["#{self.path(ARGV[-1])}/*"].map {|note| note.split("/")[-1]} if self.exists(self.path(ARGV[-1]))
+          if options == {}
+            Dir.glob("#{self.root}/*").map do |folder|
+              puts Dir["#{folder}/*"].map {|note| note.split("/")[-1]} if !File.file?(folder)
+              puts folder.split("/")[-1] if File.file?(folder)
+            end
+          end
         end
       end
 
@@ -123,6 +138,9 @@ module RN
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
+        include Paths
+        include Note
+
         example [
           'todo                        # Shows a note titled "todo" from the global book',
           '"New note" --book "My book" # Shows a note titled "New note" from the book "My book"',
@@ -131,9 +149,34 @@ module RN
 
         def call(title:, **options)
           book = options[:book]
+          puts self.root+self.extention(title)
+          # File.open(self.root+self.extention(title))
+          TTY::Editor.open(self.root+self.extention(title))
           warn "TODO: Implementar vista de la nota con título '#{title}' (del libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
     end
   end
 end
+
+
+
+          # LIST CLASS
+          # options[:book] && self.exists(self.path(ARGV[-1])) ? puts Dir.glob("#{self.path(ARGV[-1])}/*").map {|path| path.split("/")[-1]} : warn "No existe el cuaderno ingresado"
+          # puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]} if options[:global]
+          #
+          # TAMPOCO ACÁ, NUNCA ENTRA EN EL WHEN DEL MEDIO
+          # case options
+          # when{}
+          #   Dir.glob("#{self.root}/*").map do |folder|
+          #     puts Dir["#{folder}/*"].map {|note| note.split("/")[-1]} if !File.file?(folder)
+          #     puts folder.split("/")[-1] if File.file?(folder)
+          #   end
+          # when :book
+          #   puts self.path
+          #   if self.exists(self.path(ARGV[-1]))
+          #     puts Dir["#{self.path(ARGV[-1])}/*"].map {|note| note.split("/")[-1]}
+          #   else warn "El cuaderno ingresado no existe" end
+          # else :global
+          #   puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]}
+          # end

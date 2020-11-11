@@ -4,8 +4,12 @@ module Paths
         return "#{Dir.home}/my_rns"
     end
 
+    # def path(name)
+    #     return "#{Dir.home}/my_rns/#{name}"
+    # end
+
     def path(name)
-        return "#{Dir.home}/my_rns/#{name}"
+        return self.root+'/'+name
     end
 
     def validate(name)
@@ -22,8 +26,8 @@ module Paths
 
 
 
-    def exists(name) #inicializacion de books para que no tire error cuanod creo un cuaderno
-        Dir.exist?(name) || File.file?(name)
+    def exists(name)
+        Dir.exist?(name) || File.file?(name) # File.file?, File.exists? y File.exist? funcionan mal
     end
 
 end
