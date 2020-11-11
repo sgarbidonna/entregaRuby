@@ -78,18 +78,21 @@ module RN
         include Paths
         include Note
 
-        example [
-          'todo TODO                                 # Changes the title of the note titled "todo" from the global book to "TODO"',
-          '"New note" "Just a note" --book "My book" # Changes the title of the note titled "New note" from the book "My book" to "Just a note"',
-          'thoughts thinking --book Memoires         # Changes the title of the note titled "thoughts" from the book "Memoires" to "thinking"'
-        ]
-
         def call(old_title:, new_title:, **options)
-
-          if options[:book] && self.validate_rename_note_in_book(ARGV[-1],old_title,new_title)
-            path = self.path(ARGV[-1])+self.extention(new_title)
+          path=""
+          puts self.root+self.extention(old_title)
+          if options[:book] && self.validate_rename_note_in_book(self.path(ARGV[-1]),old_title,new_title)
+            path = self.path(ARGV[-1])
           elsif !options[:book] && self.validate_rename_note_in_book(self.root,old_title,new_title)
-            path = self.path(self.root)+self.extention(title
+            path = self.root
+          end
+
+          puts path
+          if !path.empty?
+            old_title=path+self.extention(old_title)
+            new_title=path+self.extention(new_title)
+            File.rename(old_title,new_title)
+            warn "Renombre exitoso"
           end
         end
       end

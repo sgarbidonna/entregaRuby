@@ -26,9 +26,4 @@ module Paths
         Dir.exist?(name) || File.file?(name)
     end
 
-    # def exists(book=self.root,name) #inicializacion de books para que no tire error cuanod creo un cuaderno
-    #     Dir.exist?(book+"/"+name) if name.to_s.split('.').empty?
-    #     File.exist?(book+"/"+name)
-    #     # Dir.exist?(self.path(name))
-    # end
 end
