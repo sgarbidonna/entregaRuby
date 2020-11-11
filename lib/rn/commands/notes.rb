@@ -92,7 +92,7 @@ module RN
 
         def call(**options)
           # el codigo del final de archivo no funcionaba -> duda
-          # solución poco objetosa y no recursiva SUPER VER!
+          # solución poco objetosa y no recursiva -> SUPER VER!
           puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]} if options[:global]
           puts Dir["#{self.path(ARGV[-1])}/*"].map {|note| note.split("/")[-1]} if self.exists(self.path(ARGV[-1]))
           if options == {}
@@ -126,7 +126,8 @@ end
 
 
 
-          # LIST CLASS
+          # ((( LIST CLASS )))
+          # NO FUNCION
           # options[:book] && self.exists(self.path(ARGV[-1])) ? puts Dir.glob("#{self.path(ARGV[-1])}/*").map {|path| path.split("/")[-1]} : warn "No existe el cuaderno ingresado"
           # puts Dir.glob("#{self.root}/*").select {|file| File.file?(file)}.map {|note| note.split("/")[-1]} if options[:global]
           #
