@@ -11,7 +11,7 @@ module RN
           include Paths
 
           def call(name:, **)
-            if self.validate(name) then
+            if self.validate(name)
               FileUtils.mkdir_p self.path(name)
               warn "Cuaderno '#{name.upcase}' creado!!"
             end
@@ -46,8 +46,6 @@ module RN
 
           def call(*)
             puts Dir.glob("#{self.root}/*").map {|path| path.split("/")[-1]}
-            # puts Dir.entries(self.root).select {|f| File.directory?(File.join(self.root,f))}
-            # puts Dir.glob("#{self.root}/*")
           end
         end
 
@@ -60,12 +58,11 @@ module RN
           include Paths
 
           def call(old_name:, new_name:, **)
-            if self.exists(old_name) then
-              if self.validate(new_name) then
+            !self.exists(self.path(old_name)) ? (return warn "No existe ningun cuaderno con el nombre '#{old_name}'.") : ""
+            if self.validate(new_name)
                 FileUtils.mv self.path(old_name), self.path(new_name)
                 warn "El antiguo cuaderno de nombre '#{old_name}' pasó a llamarse '#{new_name}'."
-              else warn "No puede incluir símbolos en el nombre del cuaderno" end
-            else warn "No existe ningun cuaderno con el nombre '#{old_name}'." end
+            end
           end
         end
       end
