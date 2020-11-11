@@ -10,7 +10,7 @@ module Paths
 
     def validate(name)
         (return warn "El nombre del cuaderno ya existe") if self.exists(self.path(name))
-        (return warn "No puede incluir símbolos en el nombre del cuaderno") if name.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/)
+        (return warn "El nombre no puede incluir símbolos") if name.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/)
         true
     end
 

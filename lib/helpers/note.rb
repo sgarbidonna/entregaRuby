@@ -25,6 +25,7 @@ module Note
     def validate_rename_a_note(book, new_title, old_title)
         (return warn "El cuaderno ingresado no existe") if !self.exists(book)
         (return warn "La nota ingresada no existe en el cuaderno") if  !self.exists(book+self.extention(old_title))
+        (return warn "No puede incluir símbolos en el nombre del cuaderno") if new_title.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/)
         (return warn "Ya existe una nota con el renombre ingresado en el cuaderno") if self.exists(book+self.extention(new_title))
         true
     end

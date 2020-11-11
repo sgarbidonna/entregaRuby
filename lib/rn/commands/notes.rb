@@ -16,12 +16,12 @@ module RN
 
         def call(title:, **options)
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          !self.exists(book) ? (self.validate_bookname(ARGV[-1]) ? (FileUtils.mkdir_p(book)) : "") : ""
-          if !self.exists(book+self.extention(title))
+          if self.validate(title)
+            if !self.exists(book+self.extention(title))
                 File.new(book+self.extention(title),'w')
                 warn "La nota '#{title.upcase}' se creó exitosamente)"
-          else warn "La nota ya existía en el cuaderno " end
-
+            else warn "La nota ya existía en el cuaderno " end
+          end
         end
       end
 
