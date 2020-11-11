@@ -80,6 +80,14 @@ module RN
         include Note
 
         def call(old_title:, new_title:, **options)
+
+          # NO FUNCIONA SI USO LA FUNCION DEL MODULO COMO VALIDADOR ! ! ! ! !  ! ! ! !  ! !  !
+          # options[:book] ? book = self.path(ARGV[-1]) : book = self.root
+          # self.validate_rename_note_in_book(book,old_title,new_title) ? "" : (return warn self.validate_rename_note_in_book(book,old_title,new_title))
+          # File.rename(book+self.extention(old_title),book+self.extention(new_title))
+          # warn "Renombre exitoso"
+
+          # OPCION POCO OBJETOSA :S
           options[:book] ? book = self.path(ARGV[-1]) : book = self.root
           if !self.exists(book)
             warn "El cuaderno ingresado no existe"
@@ -94,18 +102,6 @@ module RN
             File.rename(book+self.extention(old_title),book+self.extention(new_title))
             warn "Renombre exitoso"
           end
-
-          #  NO  SE  POR QUÉ  NO  FUNCIONA  LA  VALIDACION !!
-          # path=""
-          # if options[:book] && self.validate_rename_note_in_book(self.path(ARGV[-1]),old_title,new_title)
-          #   path = self.path(ARGV[-1])
-          # elsif !options[:book] && self.validate_rename_note_in_book(self.root,old_title,new_title)
-          #   path = self.root
-          # end
-          # if !path.empty?
-          #   File.rename(path+self.extention(old_title),path+self.extention(new_title))
-          #   warn "Renombre exitoso"
-          # end
 
         end
       end
