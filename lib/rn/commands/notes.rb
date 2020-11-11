@@ -38,6 +38,8 @@ module RN
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
+        include Paths
+        include Note
         example [
           'todo                        # Deletes a note titled "todo" from the global book',
           '"New note" --book "My book" # Deletes a note titled "New note" from the book "My book"',
@@ -45,8 +47,8 @@ module RN
         ]
 
         def call(title:, **options)
-          book = options[:book]
-          warn "TODO: Implementar borrado de la nota con título '#{title}' (del libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
+          FileUtils.remove_entry_secure self.path(book+self.extention(title))
         end
       end
 
