@@ -1,3 +1,7 @@
+require 'fileutils'
+require_relative '../../helpers/note'
+require_relative '../../helpers/paths'
+
 module RN
   module Commands
     module Notes
@@ -7,18 +11,24 @@ module RN
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
-        example [
-          'todo                        # Creates a note titled "todo" in the global book',
-          '"New note" --book "My book" # Creates a note titled "New note" in the book "My book"',
-          'thoughts --book Memoires    # Creates a note titled "thoughts" in the book "Memoires"'
-        ]
+        include Note
+        include Paths
 
         def call(title:, **options)
-          book = options[:book]
-          File.open("out.txt", "w") do |f|
-            f.write(data_you_want_to_write)
+          if options[:book]
+            if self.validate_bookname(ARGV[-1])
+              FileUtils.mkdir_p self.path(ARGV[-1]) if !self.exists(self.path(ARGV[-1]))
+              if !self.exists(self.path(ARGV[-1])+self.extention(title))
+                File.new(self.path(ARGV[-1])+self.extention(title),'w')
+                warn "La nota '#{title.upcase}' se creó exitosamente, en el cuaderno '#{ARGV[-1].upcase}'"
+              else warn "La nota ya existía en el cuaderno '#{ARGV[-1].upcase}' " end
+            end
+          elsif !self.exists(self.root+self.extention(title))
+              File.new(self.root+self.extention(title),'w')
+              warn "La nota '#{title.upcase}' se creó exitosamente en el cuaderno raíz"
+          else warn "La nota ya existía"
           end
-          warn "TODO: Implementar creación de la nota con título '#{title}' (en el libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+
         end
       end
 
@@ -65,6 +75,9 @@ module RN
         argument :new_title, required: true, desc: 'New title for the note'
         option :book, type: :string, desc: 'Book'
 
+        include Paths
+        include Note
+
         example [
           'todo TODO                                 # Changes the title of the note titled "todo" from the global book to "TODO"',
           '"New note" "Just a note" --book "My book" # Changes the title of the note titled "New note" from the book "My book" to "Just a note"',
@@ -72,8 +85,12 @@ module RN
         ]
 
         def call(old_title:, new_title:, **options)
-          book = options[:book]
-          warn "TODO: Implementar cambio del título de la nota con título '#{old_title}' hacia '#{new_title}' (del libro '#{book}').\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+
+          if options[:book] && self.validate_rename_note_in_book(ARGV[-1],old_title,new_title)
+            path = self.path(ARGV[-1])+self.extention(new_title)
+          elsif !options[:book] && self.validate_rename_note_in_book(self.root,old_title,new_title)
+            path = self.path(self.root)+self.extention(title
+          end
         end
       end
 
