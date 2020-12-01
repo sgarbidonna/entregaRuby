@@ -5,18 +5,13 @@ module RN::Commands::Notes
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
-        include Paths
-        include Notes
 
 
         def call(title:, **options)
-          # Ya q utilicé la gema tty-editor, tanto las clases (comandos) Show como Edit funcionan igual.
-          # Debido a esto decidí crear una función de mi módulo Note, con el solo objetivo de
-          # no repetir muchas líneas de código
 
-          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          self.show_and_edit(title, book)
-
+          options[:book] ? (book = RN::Models::Book.new ARGV[-1]) : (book = RN::Models::Book.new "")
+          note = RN::Models::Note.new(title,book)
+          note.show_and_edit
         end
     end
 end

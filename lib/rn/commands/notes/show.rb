@@ -6,12 +6,10 @@ module RN::Commands::Notes
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
-        include Paths
-        include Notes
-
         def call(title:, **options)
-          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          self.show_and_edit(title, book)
+          options[:book] ? (book = RN::Models::Book.new ARGV[-1]) : (book = RN::Models::Book.new "")
+          note = RN::Models::Note.new(title,book)
+          note.show_and_edit
         end
 
 

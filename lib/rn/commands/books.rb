@@ -1,6 +1,3 @@
-require 'fileutils'
-require_relative '../../helpers/paths'
-
 module RN::Commands
   module Books
     autoload :Create, "rn/commands/books/create"

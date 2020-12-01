@@ -1,7 +1,3 @@
-require 'fileutils'
-# require_relative '../../helpers/note'
-# require_relative '../../helpers/paths'
-
 module RN::Commands
   module Notes
     autoload :Create, "rn/commands/notes/create"

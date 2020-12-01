@@ -1,37 +1,70 @@
-class Note
-    attr_accessor :title, :path, :book, :extention, :text
+module RN::Models
+    class Note
+        attr_accessor :title, :path, :book, :extention, :text
 
-    singleton_class.send(:alias_method, :open, :new)
+        singleton_class.send(:alias_method, :open, :new)
 
-    def initialize title
+        def initialize(title,book_instance)
+            self.title = title
+            self.book = book_instance
+            self.extention = '.rn'
+            book.title == "" ? (self.path = book.path + title + extention) : (self.path = book.path + "/" + title + extention)
+        end
+
+        def self.list(book)
+            book == nil ? (RN::Models::Book.list_all) : (book.list_notes)
+        end
+
+        def create
+            validate_title
+            validate_uniqueness
+            book.create if !book.exists?
+            File.new(path,'w')
+        end
+
+        def show_and_edit
+            !book.exists? ? (return warn "No existe el cuaderno seleccionado") :
+            validate_existence
+            TTY::Editor.open(path)
+
+        end
+
+        def retitle(newN)
+            validate_existence
+            newN.validate_title
+            newN.validate_uniqueness
 
 
-    end
+            File.rename(path, newN.path)
+            self.title = newN.title
+            self.path = newN.path
+        end
 
-    def extention(extention='rn')
-        "/#{title}.#{extention}"
-    end
+        def delete(global)
+            if !global
+                validate_existence
+                FileUtils.remove_entry_secure(path)
+            else RN::Models::Book.delete_notes end
+        end
 
-    def create(book)
-        validate_title
-        validate_uniqueness
-        book.validate_existance
+        def validtitle?(name=nil)
+            name.nil? ? title.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/) : name.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/)
+        end
 
-        book.create if !book.validate_existance
-        File.new(book.path + extention,'w')
+        def validate_title(name=nil)
+            raise RN::Exceptions::NombreInvalido, "El nombre no puede incluir símbolos" if validtitle? name
+        end
 
-    end
+        def exists?
+            File.file? path
+        end
 
+        def validate_uniqueness
+            raise RN::Exceptions::ExisteIdentico, "Ya existe una nota con el nombre ingresado en el cuaderno" if exists?
+        end
 
-    def validtitle?(name=nil)
-        name.nil? ? path.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/) : name.match(/[!?¿@#$%^&*(=)_+{}\[\]:;'"\/\\?><.,]/)
-    end
-
-    def validate_title(name=nil)
-        raise RN::Exceptions::NombreInvalido, "El nombre no puede incluir símbolos" if validtitle? name
-    end
-
-    def validate_uniqueness
-        raise RN::Exceptions::ExisteIdentico, "Ya existe una nota con el renombre ingresado en el cuaderno" if exists?
+        def validate_existence
+            raise RN::Exceptions::Inexistente, "No existe la nota '#{title.upcase}', o te equivocaste de cuaderno :)" unless exists?
+        end
     end
 end

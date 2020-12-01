@@ -2,15 +2,20 @@ module RN::Commands::Notes
     class Delete < Dry::CLI::Command
         desc 'Delete a note'
 
-        argument :title, required: true, desc: 'Title of the note'
+        option :title, required: false, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
+        option :global, type: :boolean, desc: 'Global'
 
-        include Paths
-        include Notes
+        def call(**options)
+          options[:book] ? (book = RN::Models::Book.new ARGV[-1]) : (book = RN::Models::Book.new "")
+          options[:global] ? (title= "" ) : ()
 
-        def call(title:, **options)
-          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-          self.exists(book+self.extention(title)) ? (FileUtils.remove_entry_secure(book+self.extention(title)) && (warn "Nota eliminada")) : (warn "La nota no existe")
+          note = RN::Models::Note.open(title, book)
+          note.delete options[:global]
+
+          puts "Nota/s eliminada/s"
+        rescue RN::Exceptions::ExcepcionesModelo => e
+          puts e.message
         end
     end
 end

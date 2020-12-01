@@ -4,8 +4,7 @@ module RN
         class ExisteIdentico < ExcepcionesModelo; end
         class NombreInvalido < ExcepcionesModelo; end
         class Inexistente < ExcepcionesModelo; end
-    #   class MissingNote < ExcepcionesModelo; end
-    #   class MissingBook < ExcepcionesModelo; end
-    #   class InvalidFormat < ExcepcionesModelo; end
+        class NotasInexistentes < ExcepcionesModelo; end
+
     end
   end

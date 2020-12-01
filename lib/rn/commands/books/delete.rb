@@ -17,14 +17,14 @@ module RN::Commands::Books
             messages = book_names.map do |name|
                 book = RN::Models::Book.open name
                 book.remove
+
             rescue RN::Exceptions::ExcepcionesModelo => e
                 puts e.message
             end.join "\n"
 
             puts messages
         end
-            # "Acaba de eliminar el cuaderno '#{book.path.split("/")[-1].upcase}' y todas las notas allí contenidas"
-            # "Acaba de eliminar el cuaderno '#{book.title}' y todas las notas allí contenidas"
+
 
 
             # if options[:global]
