@@ -3,9 +3,7 @@ module RN::Commands::Books
         desc 'List books'
 
         def call(*)
-            puts RN::Models::Book.root+"/*".map {|path| path.split("/")[-1]}
-
-            # puts Dir.glob("#{self.root}/*").map {|path| path.split("/")[-1]}
+            puts RN::Models::Book.list
         end
     end
 end

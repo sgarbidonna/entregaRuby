@@ -10,6 +10,10 @@ module RN::Models
             self.path = self.root+'/'+title
         end
 
+        def self.list
+            Dir.glob("#{Dir.home}/my_rns/*").map {|path| path.split("/")[-1]}
+        end
+
         def create
             validate_uniqueness
             validate_title
@@ -24,7 +28,7 @@ module RN::Models
             FileUtils.rm_rf "#{root}/*" if title == 'root'
         end
 
-        def rename new_name
+        def rename(new_name)
             validate_existence
             validate_title new_name
 
