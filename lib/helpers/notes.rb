@@ -1,7 +1,7 @@
 require 'fileutils'
 require_relative '../helpers/paths'
 
-module Note
+module Notes
     include Paths
 
     def extention(title)
