@@ -6,5 +6,6 @@ gem 'dry-cli', '~> 0.6'
 
 gem 'tty-editor', '0.6.0'
 
-#importar fileutils
+gem 'fileutils', '~> 1.4'
+
 # gem 'tty-screen', "0.8.1"

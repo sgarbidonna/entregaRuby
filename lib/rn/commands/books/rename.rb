@@ -8,11 +8,11 @@ module RN::Commands::Books
         include Paths
 
         def call(old_name:, new_name:, **)
-            !self.exists(self.path(old_name)) ? (return warn "No existe ningun cuaderno con el nombre '#{old_name.upcase}'.") : ""
-            if self.validate(new_name)
-                FileUtils.mv self.path(old_name), self.path(new_name)
-                warn "El antiguo cuaderno de nombre '#{old_name.upcase}' pasó a llamarse '#{new_name.upcase}'."
-            end
+            oldB = RN::Models::Book.new old_name
+
+            oldB.rename new_name
+
+            puts "El antiguo cuaderno de nombre '#{old_name.upcase}' pasó a llamarse '#{new_name.upcase}'."
         end
     end
 end

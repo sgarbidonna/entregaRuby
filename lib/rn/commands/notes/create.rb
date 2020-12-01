@@ -6,17 +6,11 @@ module RN::Commands::Notes
         argument :title, required: true, desc: 'Title of the note'
         option :book, type: :string, desc: 'Book'
 
-        include Notes
-        include Paths
-
         def call(title:, **options)
-          options[:book] ? book = self.path(ARGV[-1]) : book = self.root
-
-          if self.general_validations(book, title)
-              FileUtils.mkdir_p(book) if !self.exists(book)
-              File.new(book+self.extention(title),'w')
-              warn "La nota '#{title.upcase}' se creó exitosamente)"
-          end
+            options[:book] ? book = RN::Models::Book.new (ARGV[-1]) : book = RN::Models::Book.new ""
+            note = RN::Models::Note.new(title, book)
+            note.create
+            puts "La nota '#{title.upcase}' se creó exitosamente)"
+        end
     end
-
 end
