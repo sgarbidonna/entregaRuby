@@ -13,6 +13,11 @@ module RN::Models
         def self.list
             Dir.glob("#{Dir.home}/my_rns/*").map {|path| path.split("/")[-1]}
         end
+        # def self.all
+        #     list.map do |book_title|
+        #         Book.open(book_title)
+        #     end
+        # end
 
         def create
             validate_uniqueness
@@ -21,11 +26,9 @@ module RN::Models
         end
 
         def remove
-            validate_existence
-            FileUtils.remove_entry_secure path
-
-            FileUtils.rm_rf(Dir.glob("#{root}/*")) if title == 'root'
-            FileUtils.rm_rf "#{root}/*" if title == 'root'
+            validate_existence if title != 'root'
+            FileUtils.remove_entry_secure path  if title != 'root'
+            FileUtils.rm_rf(Dir.glob("#{Dir.home}/my_rns/*")) if title == 'root'
         end
 
         def rename(new_name)
@@ -53,7 +56,7 @@ module RN::Models
         end
 
         def validate_existence
-            raise RN::Exceptions::NoExisteCuaderno, "El nombre de cuaderno '#{title}' no existe" unless exists?
+            raise RN::Exceptions::Inexistente, "El nombre de cuaderno '#{title}' no existe" unless exists?
         end
 
         def validate_uniqueness
