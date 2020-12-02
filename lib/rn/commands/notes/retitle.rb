@@ -14,7 +14,7 @@ module RN::Commands::Notes
       newN = RN::Models::Note.open new_title,book
       oldN.retitle newN
       
-      puts "El antiguo cuaderno de nombre '#{old_title.upcase}' pasó a llamarse '#{new_title.upcase}'."
+      puts "La antigua nota de nombre '#{old_title.upcase}' pasó a llamarse '#{new_title.upcase}'."
     rescue RN::Exceptions::ExcepcionesModelo => e
         warn e.message
     end

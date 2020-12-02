@@ -17,7 +17,7 @@ module RN::Commands::Notes
         note = RN::Models::Note.open title,book
         note.export
 
-        puts "Nota creada con éxito"
+        puts "Nota exportada con éxito!"
         rescue RN::Exceptions::ExcepcionesModelo => e
             puts e.message
         end

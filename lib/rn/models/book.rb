@@ -73,8 +73,8 @@ module RN::Models
         def self.export_books
             notes = self.list_books
             notes.each { |book_name|
-                book = RN::Models::Book.open book_name
-                book.export_notes
+                (book = RN::Models::Book.open book_name
+                book.export_notes) unless book_name == "exports"
             }
 
         end
@@ -105,7 +105,7 @@ module RN::Models
                 "Acaba de eliminar el cuaderno '#{title.upcase}' y todas las notas allí contenidas"
             else
                 FileUtils.rm_rf(Dir.glob("#{Dir.home}/my_rns/*")) if title == 'root'
-                "Acaba de eliminar el cuaderno global y todas las notas allí contenidas"
+                "Acaba de eliminar el cuaderno global, las notas y los cuadernos allí contenidos"
             end
         end
 

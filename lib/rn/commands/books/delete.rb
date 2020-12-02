@@ -4,25 +4,27 @@ module RN::Commands::Books
 
         argument :name, required: false, desc: 'Name of the book'
         option :global, type: :boolean, default: false, desc: 'Operate on the global book'
-
+        option :global_notes, type: :boolean, default: false, desc: 'Operate only on the notes of the global book'
 
         def call(name: nil, **options)
-
+            
             book_names = []
             book_names << name if name
             book_names << "root" if options[:global]
+            book_names << "" if options[:global_notes]
 
-            puts "No se realizó ninguna tarea ya que no ingresó ningún argumento. \n Acompañe el comando con '--global' para borrar las notas contenidas en el caderno global. \n O bien, con el nombre de un cuaderno existente que quiera eliminar junto con su contenido" if book_names==[]
+            
 
             messages = book_names.map do |name|
                 book = RN::Models::Book.open name
-                book.remove
+                book.title == "" ? RN::Models::Book.delete_notes : book.remove
 
             rescue RN::Exceptions::ExcepcionesModelo => e
                 puts e.message
             end.join "\n"
 
             puts messages
+            book_names.empty? ? (puts "No se realizó ninguna tarea ya que no ingresó ningún argumento. \n Acompañe el comando con '--global' para borrar las notas contenidas en el caderno global. \n O bien, con el nombre de un cuaderno existente que quiera eliminar junto con su contenido") : ()
         end
 
 

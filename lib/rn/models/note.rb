@@ -49,15 +49,15 @@ module RN::Models
         end
 
         def export
-            validate_existence
+            # validate_existence
 
             content = (File.open path).read
-            formatted_text = Kramdown::Document.new(content).to_html
+            text = Kramdown::Document.new(content).to_html
 
             export_book_path = RN::Models::Book.exports_book_in(book.title)
             path = export_book_path + title + ".html"
 
-            File.write(path , formatted_text)
+            File.write(path , text)
         end
 
         def validtitle?(name=nil)
