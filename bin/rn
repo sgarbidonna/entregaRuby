@@ -15,7 +15,3 @@ require 'rn'
 # Ejecuta, utilizando la gema dry-cli, los comandos que permiten utilizar la herramienta
 Dry::CLI.new(RN::Commands).call
 
-
-
-# Disables Kramdown Pdf Advice
-    # Prawn::Fonts::AFM.hide_m17n_warning = true
