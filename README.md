@@ -31,6 +31,9 @@ eliminar sólo las notas del primer nivel de nuestro sistema de cuadernos. Esto 
 que actualmente podremos: borrar un cuaderno en particular, borrar todos los cuadernos, y borrar
 las notas del primer nivel.
 
+Debido a que se agregaron nuevas funcionalidad es que se reversionó el Minor. Debido a que se modificó
+la estructura total del sistema es que se reversionó el Mayor. Por tanto, de versión tenemos: '2.2.0'
+
 ### Instalación de dependencias
 
 Para el manejo de archivos se utiliza la gema FileUtils. Para ello:
