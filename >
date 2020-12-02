@@ -1,0 +1,29 @@
+ready
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up to date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   Gemfile
+#	modified:   Gemfile.lock
+#	new file:   "[\"/Users/donni/my_rns/\"]exports/caca.html"
+#	deleted:    lib/helpers/notes.rb
+#	deleted:    lib/helpers/paths.rb
+#	modified:   lib/rn/commands.rb
+#	modified:   lib/rn/commands/books.rb
+#	new file:   lib/rn/commands/books/export.rb
+#	modified:   lib/rn/commands/books/list.rb
+#	modified:   lib/rn/commands/books/rename.rb
+#	modified:   lib/rn/commands/notes.rb
+#	modified:   lib/rn/commands/notes/create.rb
+#	modified:   lib/rn/commands/notes/edit.rb
+#	new file:   lib/rn/commands/notes/export.rb
+#	modified:   lib/rn/commands/notes/list.rb
+#	modified:   lib/rn/commands/notes/show.rb
+#	modified:   lib/rn/exceptions.rb
+#	modified:   lib/rn/models/book.rb
+#	modified:   lib/rn/models/note.rb
+#

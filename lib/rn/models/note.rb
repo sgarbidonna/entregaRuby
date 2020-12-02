@@ -1,6 +1,6 @@
 module RN::Models
     class Note
-        attr_accessor :title, :path, :book, :extention, :text
+        attr_accessor :title, :path, :book, :extention
 
         singleton_class.send(:alias_method, :open, :new)
 
@@ -31,6 +31,7 @@ module RN::Models
 
         def retitle(newN)
             validate_existence
+
             newN.validate_title
             newN.validate_uniqueness
 
@@ -45,6 +46,18 @@ module RN::Models
                 validate_existence
                 FileUtils.remove_entry_secure(path)
             else RN::Models::Book.delete_notes end
+        end
+
+        def export
+            validate_existence
+
+            content = (File.open path).read
+            formatted_text = Kramdown::Document.new(content).to_html
+
+            export_book_path = RN::Models::Book.exports_book_in(book.title)
+            path = export_book_path + title + ".html"
+
+            File.write(path , formatted_text)
         end
 
         def validtitle?(name=nil)
@@ -65,6 +78,14 @@ module RN::Models
 
         def validate_existence
             raise RN::Exceptions::Inexistente, "No existe la nota '#{title.upcase}', o te equivocaste de cuaderno :)" unless exists?
+        end
+
+        def valid_format?(format)
+            extention.match? /pdf|html|rn/
+        end
+
+        def validate_format(format)
+            raise RN::Exceptions::FormatoInvalido, "Los formatos admitibles son '.rn', '.pdf' y '.html' " unless valid_format? format
         end
     end
 end

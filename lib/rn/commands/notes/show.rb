@@ -10,8 +10,10 @@ module RN::Commands::Notes
           options[:book] ? (book = RN::Models::Book.new ARGV[-1]) : (book = RN::Models::Book.new "")
           note = RN::Models::Note.new(title,book)
           note.show_and_edit
-        end
 
+        rescue RN::Exceptions::ExcepcionesModelo => e
+            warn e.message
+        end
 
     end
 end

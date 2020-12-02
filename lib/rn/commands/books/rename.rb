@@ -7,7 +7,10 @@ module RN::Commands::Books
 
         def call(old_name:, new_name:, **)
             oldB = RN::Models::Book.open old_name
-            oldB.rename new_name
+            newB = RN::Models::Book.open new_name
+
+            oldB.rename newB
+
             puts "El antiguo cuaderno de nombre '#{old_name.upcase}' pasó a llamarse '#{new_name.upcase}'."
 
         rescue RN::Exceptions::ExcepcionesModelo => e

@@ -4,6 +4,7 @@ module RN::Commands::Books
 
         def call(*)
             puts RN::Models::Book.list
+        
         end
     end
 end

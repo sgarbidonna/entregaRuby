@@ -14,6 +14,8 @@ module RN::Commands::Notes
       list = RN::Models::Note.list book
 
       list.empty? ? (puts "No existe ninguna nota" ) : (puts list)
+    rescue RN::Exceptions::ExcepcionesModelo => e
+      warn e.message
     end
   end
 

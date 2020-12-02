@@ -11,6 +11,8 @@ module RN::Commands::Notes
             note = RN::Models::Note.new(title,book)
             note.create
             puts "La nota '#{title.upcase}' se creó exitosamente"
+        rescue RN::Exceptions::ExcepcionesModelo => e
+            warn e.message
         end
     end
 end

@@ -18,7 +18,6 @@ module RN::Models
             Dir.glob("#{Dir.home}/my_rns/*").map {|path| path.split("/")[-1]}
         end
 
-
         def self.list_books
             Dir.glob("#{Dir.home}/my_rns/*").select {|file| File.directory?(file)}.map {|path| path.split("/")[-1]}
             # devuelve los cuadernos
@@ -29,6 +28,11 @@ module RN::Models
             # devuelve las notas del root
         end
 
+        def self.list_book_notes(book_name)
+            Dir.glob("#{Dir.home}/my_rns/#{}*").select {|file| File.file?(file)}.map {|path| path.split("/")[-1]}
+            # devuelve las notas del root
+        end
+
         def self.list_all
             notes = self.list_root_notes
             notes << self.list_books.map { |book_name|
@@ -36,6 +40,7 @@ module RN::Models
                 book.list_notes
             }
             notes
+            #devuelve todas las notas
         end
 
         def self.delete_notes
@@ -46,6 +51,46 @@ module RN::Models
 
         end
 
+        def self.exports_path
+            FileUtils.mkdir_p self.root[0]+'exports'
+        end
+
+        def self.exports_book_in(title)
+            title == "" ? (path = self.root[0]+'exports/') : (path = self.root[0]+'exports/'+title+'/')
+            FileUtils.mkdir_p path
+            path
+        end
+
+        def self.export_root
+            book = RN::Models::Book.new ""
+            notes = self.list_root_notes.map {|path| path.split(".")[-2]}
+            notes.each { |note_name|
+                note = RN::Models::Note.new note_name, book
+                note.export
+            }
+        end
+
+        def self.export_books
+            notes = self.list_books
+            notes.each { |book_name|
+                book = RN::Models::Book.new book_name
+                book.export_notes
+            }
+
+        end
+
+        def self.export_all
+            self.export_root
+            self.export_books
+        end
+
+        def export_notes
+            my_notes = list_notes.map {|path| path.split(".")[-2]}
+            my_notes.each { |note_name|
+                note = RN::Models::Note.new(note_name,self)
+                note.export
+            }
+        end
 
         def create
             validate_uniqueness
@@ -64,15 +109,15 @@ module RN::Models
             end
         end
 
-        def rename(new_name)
+        def rename(newB)
             validate_existence
-            validate_title new_name
+            newB.validate_title
+            newB.validate_uniqueness
 
-            new_path= root+'/'+new_name
-            FileUtils.mv path, new_path
+            FileUtils.mv path, newB.path
 
-            self.title = new_name
-            self.path = new_path
+            self.title = newB.title
+            self.path = newB.path
 
         end
 
