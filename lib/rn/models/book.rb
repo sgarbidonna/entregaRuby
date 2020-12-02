@@ -62,10 +62,10 @@ module RN::Models
         end
 
         def self.export_root
-            book = RN::Models::Book.new ""
+            book = RN::Models::Book.open ""
             notes = self.list_root_notes.map {|path| path.split(".")[-2]}
             notes.each { |note_name|
-                note = RN::Models::Note.new note_name, book
+                note = RN::Models::Note.open(note_name, book)
                 note.export
             }
         end
@@ -73,7 +73,7 @@ module RN::Models
         def self.export_books
             notes = self.list_books
             notes.each { |book_name|
-                book = RN::Models::Book.new book_name
+                book = RN::Models::Book.open book_name
                 book.export_notes
             }
 
